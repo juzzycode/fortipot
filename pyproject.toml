@@ -7,7 +7,7 @@ name = "fortipot"
 version = "0.1.0"
 description = "Defensive network tripwire with FortiGate-aware enforcement for modern LANs."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Open Source Maintainers" }]
 dependencies = [

@@ -4,6 +4,13 @@
 
 ## 1. Create a Virtual Environment
 
+Linux or macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
 Windows PowerShell:
 
 ```powershell
@@ -20,13 +27,32 @@ uv venv .venv
 
 ## 2. Install fortipot
 
+Linux or macOS:
+
+```bash
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e ".[dev]"
+```
+
+Windows PowerShell:
+
 ```powershell
-pip install -e .[dev]
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e ".[dev]"
 ```
 
 ## 3. Prepare Config
 
 Start from the included example:
+
+Linux or macOS:
+
+```bash
+cp config.example.yaml config.yaml
+cp .env.example .env
+```
+
+Windows PowerShell:
 
 ```powershell
 Copy-Item config.example.yaml config.yaml
@@ -42,13 +68,13 @@ Recommended first-run settings:
 
 ## 4. Validate the Config
 
-```powershell
+```bash
 fortipot check-config --config config.yaml
 ```
 
 ## 5. Run Local Health Checks
 
-```powershell
+```bash
 fortipot health --config config.yaml
 fortipot version
 ```
@@ -57,7 +83,7 @@ fortipot version
 
 This is the safest way to confirm the scoring pipeline works before live capture:
 
-```powershell
+```bash
 fortipot simulate --scenario syn_scan --config config.yaml
 fortipot simulate --scenario icmp_sweep --config config.yaml
 ```
@@ -66,13 +92,13 @@ fortipot simulate --scenario icmp_sweep --config config.yaml
 
 Start the runtime:
 
-```powershell
+```bash
 fortipot run --config config.yaml
 ```
 
 Start the API in a separate shell:
 
-```powershell
+```bash
 fortipot api --config config.yaml --host 127.0.0.1 --port 8080
 ```
 

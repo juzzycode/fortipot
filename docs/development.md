@@ -4,25 +4,35 @@ This guide covers local development and contribution workflow for `fortipot`.
 
 ## Prerequisites
 
-- Python 3.12+
+- Python 3.10+
 - `pip` or `uv`
 - a writable local virtual environment
 
 ## Local Setup
+
+Linux or macOS with `pip`:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e ".[dev]"
+```
 
 Using `pip`:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -e .[dev]
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e ".[dev]"
 ```
 
 If your packaging toolchain is older and editable installs complain about missing `build_editable`, upgrade `pip`, `setuptools`, and `wheel` first:
 
 ```powershell
 python -m pip install --upgrade pip setuptools wheel
-pip install -e .[dev]
+python -m pip install -e ".[dev]"
 ```
 
 Using `uv`:
@@ -30,7 +40,7 @@ Using `uv`:
 ```powershell
 uv venv .venv
 .\.venv\Scripts\Activate.ps1
-uv pip install --python .venv\Scripts\python.exe -e .[dev]
+uv pip install --python .venv\Scripts\python.exe -e ".[dev]"
 ```
 
 ## Running Tests
