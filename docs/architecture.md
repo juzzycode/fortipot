@@ -68,6 +68,6 @@ Events and actions are written to SQLite using explicit helper functions so the 
 
 ## Current MVP Boundaries
 
-- live capture is scaffolded rather than fully hardened
+- live capture is implemented with `scapy`, but it is still only lightly hardened and focused on common IPv4 LAN traffic
 - approval replay is still a placeholder workflow
 - FortiGate endpoints are conservative wrappers that require lab validation

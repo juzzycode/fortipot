@@ -140,7 +140,7 @@ This keeps the MVP auditable and easy to test locally.
 
 ## Limitations
 
-- Live packet capture remains a passive scaffold in this MVP so the project can be exercised safely in tests and local simulations.
+- Live packet capture is implemented for IPv4 TCP, UDP, ICMP, and ARP, but it is not yet hardened for every link type or protocol variant.
 - Endpoint resolution is passive only and intentionally avoids active probing.
 - Approval execution currently records the approval intent and leaves replay semantics as a documented next step.
 - FortiGate API paths are isolated behind a client abstraction, but exact firmware behavior still requires lab validation.
