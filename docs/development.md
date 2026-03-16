@@ -18,6 +18,13 @@ python -m venv .venv
 pip install -e .[dev]
 ```
 
+If your packaging toolchain is older and editable installs complain about missing `build_editable`, upgrade `pip`, `setuptools`, and `wheel` first:
+
+```powershell
+python -m pip install --upgrade pip setuptools wheel
+pip install -e .[dev]
+```
+
 Using `uv`:
 
 ```powershell
