@@ -9,6 +9,9 @@ capture:
   promiscuous: true
   bpf_filter: ""
   use_pcap: true
+  exclude_local_sources: true
+  excluded_ips: []
+  excluded_macs: []
 
 detection:
   window_seconds: 15

@@ -29,6 +29,9 @@ class CaptureConfig(BaseModel):
     promiscuous: bool = True
     bpf_filter: str = ""
     use_pcap: bool = True
+    exclude_local_sources: bool = True
+    excluded_ips: list[str] = Field(default_factory=list)
+    excluded_macs: list[str] = Field(default_factory=list)
 
 
 class DetectionConfig(BaseModel):

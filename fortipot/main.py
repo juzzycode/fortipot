@@ -25,6 +25,8 @@ from fortipot.storage.actions import record_action
 from fortipot.storage.db import initialize_database
 from fortipot.storage.events import record_event
 from fortipot.utils.ip import classify_ip
+from fortipot.utils.mac import normalize_mac
+from fortipot.utils.network import LocalNetworkIdentity, discover_local_identity
 from fortipot.utils.time import utc_now
 
 logger = get_logger(__name__)
@@ -73,6 +75,7 @@ class Runtime:
     quarantine_enforcer: QuarantineEnforcer
     public_block_enforcer: PublicBlockEnforcer
     action_guard: ActionGuard
+    local_identity: LocalNetworkIdentity = field(default_factory=LocalNetworkIdentity)
 
     @classmethod
     def from_settings(cls, settings: Settings) -> "Runtime":
@@ -80,6 +83,11 @@ class Runtime:
 
         initialize_database(settings.storage.sqlite_path)
         client = FortiGateClient(settings.fortigate, dry_run=settings.app.dry_run)
+        local_identity = discover_local_identity() if settings.capture.exclude_local_sources else LocalNetworkIdentity()
+        local_identity.ips.update(settings.capture.excluded_ips)
+        local_identity.macs.update(
+            normalized for normalized in (normalize_mac(mac) for mac in settings.capture.excluded_macs) if normalized
+        )
         return cls(
             settings=settings,
             detector=DetectionEngine(settings),
@@ -92,7 +100,20 @@ class Runtime:
             quarantine_enforcer=QuarantineEnforcer(settings, client),
             public_block_enforcer=PublicBlockEnforcer(settings, client),
             action_guard=ActionGuard(settings),
+            local_identity=local_identity,
         )
+
+    def should_ignore_event(self, event: PacketEvent) -> bool:
+        """Return whether an event should be excluded from detection."""
+
+        if event.src_ip in self.local_identity.ips:
+            logger.debug("packet_ignored_local_ip", src_ip=event.src_ip)
+            return True
+        src_mac = normalize_mac(event.src_mac)
+        if src_mac and src_mac in self.local_identity.macs:
+            logger.debug("packet_ignored_local_mac", src_mac=src_mac)
+            return True
+        return False
 
 
 def handle_decision(runtime: Runtime, event: PacketEvent) -> tuple[int, int | None]:
@@ -202,8 +223,12 @@ def run_runtime(runtime: Runtime) -> None:
         mode=runtime.settings.app.mode.value,
         dry_run=runtime.settings.app.dry_run,
         interface=runtime.settings.capture.interface,
+        excluded_source_ips=sorted(runtime.local_identity.ips),
+        excluded_source_macs=sorted(runtime.local_identity.macs),
     )
     for event in runtime.capture.listen():
+        if runtime.should_ignore_event(event):
+            continue
         handle_decision(runtime, event)
 
 
