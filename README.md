@@ -94,6 +94,8 @@ The repository includes `config.example.yaml` and `.env.example`. YAML is the pr
 - `fortipot simulate --scenario syn_scan`
 - `fortipot version`
 
+`fortipot version` prints the base release plus a build number when git history is available, for example `0.1.0.12345`.
+
 ## API
 
 - `GET /health`

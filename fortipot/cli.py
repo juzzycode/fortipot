@@ -8,7 +8,7 @@ from pathlib import Path
 import typer
 import uvicorn
 
-from fortipot import __version__
+from fortipot import get_version
 from fortipot.api.server import create_app
 from fortipot.collector.packet_parser import build_packet_event
 from fortipot.config import load_settings
@@ -121,7 +121,7 @@ def api(
 def version() -> None:
     """Print the version."""
 
-    typer.echo(__version__)
+    typer.echo(get_version())
 
 
 def main() -> None:

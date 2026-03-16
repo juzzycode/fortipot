@@ -79,6 +79,8 @@ fortipot health --config config.yaml
 fortipot version
 ```
 
+The version command reports the base release plus a build number when repository history is available, for example `0.1.0.12345`.
+
 ## 6. Simulate Detection
 
 This is the safest way to confirm the scoring pipeline works before live capture:
