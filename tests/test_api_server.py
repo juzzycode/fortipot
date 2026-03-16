@@ -10,6 +10,7 @@ def test_api_index_lists_endpoints() -> None:
     assert response.status_code == 200
     assert "fortipot API" in response.text
     assert "/health" in response.text
+    assert "/rules" in response.text
     assert "/events" in response.text
     assert "/actions" in response.text
     assert "/config/redacted" in response.text
@@ -26,3 +27,15 @@ def test_render_events_json_includes_blank_line_between_entries() -> None:
     assert body.startswith("[\n{")
     assert "},\n\n{" in body
     assert body.endswith("\n]")
+
+
+def test_rules_endpoint_returns_detector_explanation() -> None:
+    client = TestClient(create_app("config.example.yaml"))
+
+    response = client.get("/rules")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["window_seconds"] == 15
+    assert payload["thresholds"]["syn_scan_ports_threshold"] == 10
+    assert any(rule["name"] == "tcp_syn_scan" for rule in payload["rules"])

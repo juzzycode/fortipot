@@ -31,6 +31,7 @@ def create_app(config_path: str | None = None) -> FastAPI:
     from fortipot.api.routes_actions import router as actions_router
     from fortipot.api.routes_events import router as events_router
     from fortipot.api.routes_health import router as health_router
+    from fortipot.api.routes_rules import router as rules_router
 
     settings = get_settings(config_path)
     runtime = Runtime.from_settings(settings)
@@ -49,6 +50,7 @@ def create_app(config_path: str | None = None) -> FastAPI:
 
         links = [
             ("/health", "Health"),
+            ("/rules", "Rules"),
             ("/events", "Events"),
             ("/actions", "Actions"),
             ("/config/redacted", "Redacted Config"),
@@ -113,6 +115,7 @@ def create_app(config_path: str | None = None) -> FastAPI:
         return settings.redacted_dict()
 
     app.include_router(health_router)
+    app.include_router(rules_router)
     app.include_router(events_router)
     app.include_router(actions_router)
     return app

@@ -76,6 +76,7 @@ fortipot check-config --config config.yaml
 
 ```bash
 fortipot health --config config.yaml
+fortipot explain-rules --config config.yaml
 fortipot version
 ```
 
@@ -109,6 +110,7 @@ fortipot api --config config.yaml --host 127.0.0.1 --port 8080
 ```bash
 curl http://127.0.0.1:8080/
 curl http://127.0.0.1:8080/health
+curl http://127.0.0.1:8080/rules
 curl http://127.0.0.1:8080/events
 curl http://127.0.0.1:8080/actions
 curl http://127.0.0.1:8080/config/redacted

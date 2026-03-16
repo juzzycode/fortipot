@@ -87,6 +87,7 @@ The repository includes `config.example.yaml` and `.env.example`. YAML is the pr
 - `fortipot run`
 - `fortipot check-config`
 - `fortipot health`
+- `fortipot explain-rules`
 - `fortipot events list`
 - `fortipot actions list`
 - `fortipot quarantine release --ip ...`
@@ -99,6 +100,7 @@ The repository includes `config.example.yaml` and `.env.example`. YAML is the pr
 ## API
 
 - `GET /health`
+- `GET /rules`
 - `GET /events`
 - `GET /actions`
 - `POST /actions/approve`
@@ -109,6 +111,7 @@ Example:
 
 ```bash
 curl http://127.0.0.1:8080/health
+curl http://127.0.0.1:8080/rules
 curl http://127.0.0.1:8080/events
 curl -X POST http://127.0.0.1:8080/actions/approve -H "Content-Type: application/json" -d '{"action_id":1}'
 curl -X POST http://127.0.0.1:8080/actions/release -H "Content-Type: application/json" -d '{"ip":"10.0.0.25"}'

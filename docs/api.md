@@ -1,6 +1,6 @@
 # API Reference
 
-`fortipot` exposes a small FastAPI service for health checks, event review, action review, approvals, releases, and redacted configuration inspection.
+`fortipot` exposes a small FastAPI service for health checks, rule review, event review, action review, approvals, releases, and redacted configuration inspection.
 
 ## Run the API
 
@@ -36,6 +36,16 @@ Response:
 {
   "status": "ok"
 }
+```
+
+## `GET /rules`
+
+Returns the active detector rule set, thresholds, scoring formula, and action thresholds derived from the loaded config.
+
+Example:
+
+```bash
+curl http://127.0.0.1:8080/rules
 ```
 
 ## `GET /events`

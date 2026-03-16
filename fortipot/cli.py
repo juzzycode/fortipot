@@ -13,6 +13,7 @@ from fortipot.api.server import create_app
 from fortipot.collector.packet_parser import build_packet_event
 from fortipot.config import load_settings
 from fortipot.detector.engine import DetectionEngine
+from fortipot.detector.rules import explain_rules
 from fortipot.logging_utils import configure_logging
 from fortipot.main import Runtime, release_action, run_runtime
 from fortipot.models import EventKind
@@ -53,6 +54,14 @@ def health(config: Path = typer.Option(Path("config.example.yaml"), exists=False
     settings = load_settings(config)
     initialize_database(settings.storage.sqlite_path)
     typer.echo(json.dumps({"status": "ok", "mode": settings.app.mode.value}))
+
+
+@app.command("explain-rules")
+def explain_rules_command(config: Path = typer.Option(Path("config.example.yaml"), exists=False)) -> None:
+    """Print the active detector rule and scoring configuration."""
+
+    settings = load_settings(config)
+    typer.echo(json.dumps(explain_rules(settings), indent=2))
 
 
 @events_app.command("list")
