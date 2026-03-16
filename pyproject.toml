@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fortipot"
+version = "0.1.0"
+description = "Defensive network tripwire with FortiGate-aware enforcement for modern LANs."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Open Source Maintainers" }]
+dependencies = [
+  "fastapi>=0.115,<1.0",
+  "httpx>=0.27,<1.0",
+  "pydantic>=2.8,<3.0",
+  "pydantic-settings>=2.4,<3.0",
+  "pyyaml>=6.0,<7.0",
+  "scapy>=2.5,<3.0",
+  "structlog>=24.2,<25.0",
+  "typer>=0.12,<1.0",
+  "uvicorn>=0.30,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9.0",
+  "pytest-cov>=5.0,<6.0",
+]
+
+[project.scripts]
+fortipot = "fortipot.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fortipot*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

@@ -1,0 +1,61 @@
+app:
+  name: fortipot
+  mode: detect_only
+  dry_run: true
+  log_level: INFO
+
+capture:
+  interface: eth0
+  promiscuous: true
+  bpf_filter: ""
+  use_pcap: true
+
+detection:
+  window_seconds: 15
+  alert_score: 25
+  isolate_score: 50
+  syn_scan_ports_threshold: 10
+  host_fanout_threshold: 8
+  arp_sweep_threshold: 12
+  icmp_sweep_threshold: 10
+  service_fanout_ports:
+    - 22
+    - 445
+    - 3389
+    - 5985
+
+classification:
+  local_cidrs:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+  treat_link_local_as_local: true
+
+allowlists:
+  cidrs: []
+  ips: []
+  macs: []
+  hostnames: []
+  exempt_tags: []
+
+safety:
+  auto_release_minutes: 60
+  cooldown_minutes: 30
+  max_auto_actions_per_minute: 5
+  require_mac_for_local_quarantine: true
+  min_confidence_for_isolation: 0.8
+
+fortigate:
+  base_url: https://192.168.1.1
+  token_env: FORTIPOT_FGT_TOKEN
+  vdom: root
+  verify_tls: true
+  request_timeout_seconds: 10
+  retries: 2
+
+storage:
+  sqlite_path: ./fortipot.db
+
+alerts:
+  stdout: true
+  webhook_url: ""

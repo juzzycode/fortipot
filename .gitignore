@@ -1,0 +1,37 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local virtual environments
+.venv/
+venv/
+
+# Local test and tool temp directories
+.tmp/
+.uv-cache/
+.pytest-base/
+.pytest-tmp/
+pytest-cache-files-*/
+
+# Packaging artifacts
+*.egg-info/
+build/
+dist/
+
+# Local runtime artifacts
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# IDE and OS noise
+.DS_Store
+Thumbs.db
