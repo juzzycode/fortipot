@@ -106,7 +106,8 @@ fortipot api --config config.yaml --host 127.0.0.1 --port 8080
 
 ## 8. Query the API
 
-```powershell
+```bash
+curl http://127.0.0.1:8080/
 curl http://127.0.0.1:8080/health
 curl http://127.0.0.1:8080/events
 curl http://127.0.0.1:8080/actions

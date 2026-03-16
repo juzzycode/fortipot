@@ -10,6 +10,16 @@ fortipot api --config config.yaml --host 127.0.0.1 --port 8080
 
 ## Endpoints
 
+## `GET /`
+
+Returns a small browser-friendly index page with links to the main endpoints and interactive API docs.
+
+Example:
+
+```bash
+curl http://127.0.0.1:8080/
+```
+
 ## `GET /health`
 
 Returns basic liveness status.
