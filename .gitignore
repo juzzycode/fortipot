@@ -10,6 +10,9 @@ __pycache__/
 .coverage.*
 htmlcov/
 
+# Local private files
+.env
+config.yaml
 # Local virtual environments
 .venv/
 venv/
