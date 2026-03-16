@@ -6,6 +6,7 @@
 
 - `app`
 - `capture`
+- `bait`
 - `detection`
 - `classification`
 - `allowlists`
@@ -63,6 +64,7 @@ Controls the rolling scoring model and thresholds.
 - `host_fanout_threshold`: unique destination host threshold
 - `arp_sweep_threshold`: ARP target diversity threshold
 - `icmp_sweep_threshold`: ICMP target diversity threshold
+- `bait_touch_threshold`: number of unique bait ports touched before the dedicated bait rule matches
 - `service_fanout_ports`: ports treated as sensitive lateral-movement targets
 
 Example:
@@ -100,6 +102,42 @@ classification:
     - 192.168.0.0/16
   treat_link_local_as_local: true
 ```
+
+## bait
+
+Controls optional fake-response bait ports.
+
+- `enabled`: enable bait services overall
+- `bind_host`: local address to bind bait listeners to
+- `http.enabled` / `ssh.enabled` / `dns.enabled` / `samba.enabled`: enable individual bait services
+- `http.port` / `ssh.port` / `dns.port` / `samba.port`: listening ports
+- `http.banner` / `ssh.banner` / `samba.banner`: fake reply payloads for TCP services
+
+Example:
+
+```yaml
+bait:
+  enabled: true
+  bind_host: 0.0.0.0
+  http:
+    enabled: true
+    port: 80
+  ssh:
+    enabled: true
+    port: 22
+  dns:
+    enabled: true
+    port: 53
+  samba:
+    enabled: false
+    port: 445
+```
+
+Notes:
+
+- bait hits contribute a `bait_port_touch` matched behavior
+- binding low ports such as `22`, `53`, and `80` may require root or `CAP_NET_BIND_SERVICE`
+- fake banners are intentionally lightweight and are not full protocol emulations
 
 ## allowlists
 

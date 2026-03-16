@@ -12,7 +12,7 @@ def explain_rules(settings: Settings) -> dict:
     return {
         "window_seconds": config.window_seconds,
         "thresholds": _thresholds(config),
-        "rules": _rules(config),
+        "rules": _rules(settings),
         "scoring": _scoring(config),
         "actions": {
             "log_at_or_above": 0,
@@ -30,12 +30,14 @@ def _thresholds(config: DetectionConfig) -> dict[str, int | list[int]]:
         "host_fanout_threshold": config.host_fanout_threshold,
         "arp_sweep_threshold": config.arp_sweep_threshold,
         "icmp_sweep_threshold": config.icmp_sweep_threshold,
+        "bait_touch_threshold": config.bait_touch_threshold,
         "service_fanout_ports": config.service_fanout_ports,
     }
 
 
-def _rules(config: DetectionConfig) -> list[dict[str, str | int]]:
-    return [
+def _rules(settings: Settings) -> list[dict[str, str | int]]:
+    config = settings.detection
+    rules = [
         {
             "name": "tcp_syn_scan",
             "trigger": f"unique TCP SYN destination ports >= {config.syn_scan_ports_threshold}",
@@ -56,6 +58,20 @@ def _rules(config: DetectionConfig) -> list[dict[str, str | int]]:
             "trigger": f"unique ICMP destination hosts >= {config.icmp_sweep_threshold}",
             "indicator": "icmp_targets",
         },
+        *(
+            [
+                {
+                    "name": "bait_port_touch",
+                    "trigger": (
+                        f"unique bait ports touched >= {config.bait_touch_threshold} "
+                        f"across configured bait ports {settings.bait.active_ports()}"
+                    ),
+                    "indicator": "bait_touched",
+                }
+            ]
+            if settings.bait.active_ports()
+            else []
+        ),
         *[
             {
                 "name": f"service_fanout_{port}",
@@ -65,6 +81,7 @@ def _rules(config: DetectionConfig) -> list[dict[str, str | int]]:
             for port in config.service_fanout_ports
         ],
     ]
+    return rules
 
 
 def _scoring(config: DetectionConfig) -> dict[str, object]:

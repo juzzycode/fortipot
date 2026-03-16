@@ -64,6 +64,7 @@ Recommended first-run settings:
 - `app.mode: detect_only`
 - `app.dry_run: true`
 - `capture.interface`: set this to the interface you want to observe
+- `bait.enabled`: keep this `false` until you are ready to expose bait ports
 - `storage.sqlite_path`: keep the default or point it to a local writable path
 
 ## 4. Validate the Config

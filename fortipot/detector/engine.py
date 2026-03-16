@@ -22,8 +22,9 @@ class DetectionEngine:
 
         classification = classify_ip(event.src_ip, self.settings)
         events = self.state.add_event(event, self.settings.detection.window_seconds)
-        indicators = derive_indicators(events, self.settings.detection)
-        behaviors = matched_behaviors(indicators, self.settings.detection)
+        bait_ports = self.settings.bait.active_ports()
+        indicators = derive_indicators(events, self.settings.detection, bait_ports=bait_ports)
+        behaviors = matched_behaviors(indicators, self.settings.detection, bait_ports=bait_ports)
         score, confidence = calculate_score(indicators, behaviors, self.settings.detection)
         action = recommended_action(score, self.settings.detection)
         if classification == SourceClassification.PUBLIC and action in {

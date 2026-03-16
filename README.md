@@ -11,6 +11,7 @@ This project is for blue-team defensive use only. It does not include exploit lo
 - Classifies sources as local/private vs public/non-private
 - Resolves local endpoints with passive data such as ARP, DHCP leases, and inventory caches
 - Supports detect-only, approval-required, FortiGate quarantine, and public-IP block workflows
+- Can expose optional bait ports with fake service banners for deception and tripwire value
 - Records audit events and enforcement history in SQLite
 - Exposes a local CLI and FastAPI service for operations and review
 
@@ -120,6 +121,8 @@ curl -X POST http://127.0.0.1:8080/actions/release -H "Content-Type: application
 ## Detection Design
 
 The detector normalizes passive observations, tracks them in per-source rolling windows, derives behavioral indicators, calculates a score, applies classification and allowlists, and then recommends log, alert, quarantine, or public block behavior. The current MVP includes coverage for TCP SYN fan-out, host fan-out, ICMP sweep patterns, ARP sweep diversity, and suspicious service fan-out on ports such as 22, 445, 3389, and 5985.
+
+Optional bait services can also expose fake HTTP, SSH, DNS, and Samba responses. Touching configured bait ports adds a dedicated `bait_port_touch` behavior to the detector.
 
 ## Persistence
 

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 from fortipot.collector.pcap_listener import PacketCaptureListener
 from fortipot.config import Settings
+from fortipot.bait.server import BaitServiceManager
 from fortipot.detector.engine import DetectionEngine
 from fortipot.enforcer.blocker import PublicBlockEnforcer
 from fortipot.enforcer.fortigate import FortiGateClient
@@ -76,6 +77,7 @@ class Runtime:
     public_block_enforcer: PublicBlockEnforcer
     action_guard: ActionGuard
     local_identity: LocalNetworkIdentity = field(default_factory=LocalNetworkIdentity)
+    bait_services: BaitServiceManager | None = None
 
     @classmethod
     def from_settings(cls, settings: Settings) -> "Runtime":
@@ -101,6 +103,7 @@ class Runtime:
             public_block_enforcer=PublicBlockEnforcer(settings, client),
             action_guard=ActionGuard(settings),
             local_identity=local_identity,
+            bait_services=BaitServiceManager(settings.bait) if settings.bait.enabled else None,
         )
 
     def should_ignore_event(self, event: PacketEvent) -> bool:
@@ -223,13 +226,20 @@ def run_runtime(runtime: Runtime) -> None:
         mode=runtime.settings.app.mode.value,
         dry_run=runtime.settings.app.dry_run,
         interface=runtime.settings.capture.interface,
+        bait_ports=runtime.settings.bait.active_ports(),
         excluded_source_ips=sorted(runtime.local_identity.ips),
         excluded_source_macs=sorted(runtime.local_identity.macs),
     )
-    for event in runtime.capture.listen():
-        if runtime.should_ignore_event(event):
-            continue
-        handle_decision(runtime, event)
+    if runtime.bait_services is not None:
+        runtime.bait_services.start()
+    try:
+        for event in runtime.capture.listen():
+            if runtime.should_ignore_event(event):
+                continue
+            handle_decision(runtime, event)
+    finally:
+        if runtime.bait_services is not None:
+            runtime.bait_services.stop()
 
 
 def approve_action(state, action_id: int) -> dict:

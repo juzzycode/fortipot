@@ -13,6 +13,26 @@ capture:
   excluded_ips: []
   excluded_macs: []
 
+bait:
+  enabled: false
+  bind_host: 0.0.0.0
+  http:
+    enabled: false
+    port: 80
+    banner: "HTTP/1.1 200 OK\r\nServer: Apache/2.4.58\r\nContent-Length: 37\r\nConnection: close\r\n\r\n<html><body>It works.</body></html>"
+  ssh:
+    enabled: false
+    port: 22
+    banner: "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3\r\n"
+  dns:
+    enabled: false
+    port: 53
+    banner: ""
+  samba:
+    enabled: false
+    port: 445
+    banner: "\u0000\u0000\u0000/\u00ffSMBr\u0000\u0000\u0000\u0000\u0018S\u00c8\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000FAKE-SAMBA"
+
 detection:
   window_seconds: 15
   alert_score: 25
@@ -21,6 +41,7 @@ detection:
   host_fanout_threshold: 8
   arp_sweep_threshold: 12
   icmp_sweep_threshold: 10
+  bait_touch_threshold: 1
   service_fanout_ports:
     - 22
     - 445

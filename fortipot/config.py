@@ -34,6 +34,48 @@ class CaptureConfig(BaseModel):
     excluded_macs: list[str] = Field(default_factory=list)
 
 
+class BaitServiceConfig(BaseModel):
+    """Configuration for one bait service."""
+
+    enabled: bool = False
+    port: int
+    banner: str = ""
+
+
+class BaitConfig(BaseModel):
+    """Honeyd-style bait service configuration."""
+
+    enabled: bool = False
+    bind_host: str = "0.0.0.0"
+    http: BaitServiceConfig = Field(
+        default_factory=lambda: BaitServiceConfig(
+            port=80,
+            banner="HTTP/1.1 200 OK\r\nServer: Apache/2.4.58\r\nContent-Length: 37\r\nConnection: close\r\n\r\n<html><body>It works.</body></html>",
+        )
+    )
+    ssh: BaitServiceConfig = Field(
+        default_factory=lambda: BaitServiceConfig(
+            port=22,
+            banner="SSH-2.0-OpenSSH_8.9p1 Ubuntu-3\r\n",
+        )
+    )
+    dns: BaitServiceConfig = Field(default_factory=lambda: BaitServiceConfig(port=53))
+    samba: BaitServiceConfig = Field(
+        default_factory=lambda: BaitServiceConfig(
+            port=445,
+            banner="\x00\x00\x00\x2f\xffSMBr\x00\x00\x00\x00\x18\x53\xc8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00FAKE-SAMBA",
+        )
+    )
+
+    def active_ports(self) -> list[int]:
+        """Return enabled bait ports."""
+
+        if not self.enabled:
+            return []
+        services = [self.http, self.ssh, self.dns, self.samba]
+        return [service.port for service in services if service.enabled]
+
+
 class DetectionConfig(BaseModel):
     """Detection thresholds and signal weights."""
 
@@ -45,6 +87,7 @@ class DetectionConfig(BaseModel):
     arp_sweep_threshold: int = 12
     icmp_sweep_threshold: int = 10
     service_fanout_ports: list[int] = Field(default_factory=lambda: [22, 445, 3389, 5985])
+    bait_touch_threshold: int = 1
 
 
 class ClassificationConfig(BaseModel):
@@ -113,6 +156,7 @@ class Settings(BaseModel):
 
     app: AppConfig = Field(default_factory=AppConfig)
     capture: CaptureConfig = Field(default_factory=CaptureConfig)
+    bait: BaitConfig = Field(default_factory=BaitConfig)
     detection: DetectionConfig = Field(default_factory=DetectionConfig)
     classification: ClassificationConfig = Field(default_factory=ClassificationConfig)
     allowlists: AllowlistConfig = Field(default_factory=AllowlistConfig)
