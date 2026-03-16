@@ -128,3 +128,62 @@ Recommended progression:
 - Public IPs should be blocked, not VLAN-quarantined.
 - Local/private endpoint quarantine works best when MAC and VLAN context are available.
 - FortiGate API behavior should always be lab-validated before production rollout.
+
+## Linux Capture Permissions
+
+A Python virtual environment does not grant packet-capture privileges by itself. On Linux, promiscuous capture usually requires `CAP_NET_ADMIN`, and raw capture usually requires `CAP_NET_RAW`.
+
+Recommended options:
+
+### Option 1: Grant Linux Capabilities to Python
+
+Find the real interpreter behind your virtual environment:
+
+```bash
+readlink -f .venv/bin/python
+```
+
+Grant the needed capabilities once as an administrator:
+
+```bash
+sudo setcap cap_net_raw,cap_net_admin=eip /full/path/to/python3
+getcap /full/path/to/python3
+```
+
+Then run `fortipot` normally from the virtual environment:
+
+```bash
+source .venv/bin/activate
+fortipot run --config config.yaml
+```
+
+Notes:
+
+- apply `setcap` to the real interpreter, not the `.venv/bin/python` symlink
+- interpreter upgrades may require capabilities to be applied again
+- this usually needs admin access once
+
+### Option 2: Use `dumpcap`
+
+This is often the safer non-root model.
+
+Install and configure it once as an administrator:
+
+```bash
+sudo apt install wireshark-common
+sudo dpkg-reconfigure wireshark-common
+sudo usermod -aG wireshark $USER
+```
+
+After logging out and back in, members of the `wireshark` group can often capture without running Python as root.
+
+### Option 3: No Admin Access
+
+If you do not have admin access, you generally cannot enable promiscuous capture from the virtual environment alone.
+
+Fallback options:
+
+- run in non-promiscuous mode
+- use simulation scenarios
+- work from packet capture files
+- ask an administrator to grant capabilities or configure `dumpcap`

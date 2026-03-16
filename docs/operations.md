@@ -99,3 +99,13 @@ curl -X POST http://127.0.0.1:8080/actions/release \
 - Local quarantine quality depends on MAC and switch/VLAN context.
 - Public IP blocking may affect shared infrastructure if used carelessly.
 - Approval and release actions should be auditable and reviewed.
+
+## Linux Privilege Model For Capture
+
+On Linux, a virtual environment does not provide packet-capture privileges. If you need promiscuous or raw capture, coordinate with your administrator and use one of these supported approaches:
+
+- grant `CAP_NET_RAW` and `CAP_NET_ADMIN` to the real Python interpreter
+- use `dumpcap` with appropriate group permissions
+- avoid live promiscuous capture and use simulation or packet files instead
+
+This should be planned as part of deployment, not worked around inside the application.
