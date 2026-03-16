@@ -46,6 +46,18 @@ fortipot run --config config.example.yaml
 fortipot api --config config.example.yaml --host 127.0.0.1 --port 8080
 ```
 
+## Docs
+
+- [`docs/README.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/README.md)
+- [`docs/quickstart.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/quickstart.md)
+- [`docs/configuration.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/configuration.md)
+- [`docs/api.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/api.md)
+- [`docs/architecture.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/architecture.md)
+- [`docs/detection-and-scoring.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/detection-and-scoring.md)
+- [`docs/operations.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/operations.md)
+- [`docs/fortigate.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/fortigate.md)
+- [`docs/development.md`](/Users/Juzzy/Documents/GitHub/fortipot/docs/development.md)
+
 ## Config Example
 
 The repository includes `config.example.yaml` and `.env.example`. YAML is the primary config source, with environment variable overrides for common runtime settings like `FORTIPOT_MODE`, `FORTIPOT_DRY_RUN`, and `FORTIPOT_SQLITE_PATH`.
