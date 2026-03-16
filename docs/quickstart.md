@@ -133,9 +133,9 @@ Recommended progression:
 - Local/private endpoint quarantine works best when MAC and VLAN context are available.
 - FortiGate API behavior should always be lab-validated before production rollout.
 
-## Linux Capture Permissions
+## Linux Capture And Bind Permissions
 
-A Python virtual environment does not grant packet-capture privileges by itself. On Linux, promiscuous capture usually requires `CAP_NET_ADMIN`, and raw capture usually requires `CAP_NET_RAW`.
+A Python virtual environment does not grant packet-capture or low-port bind privileges by itself. On Linux, promiscuous capture usually requires `CAP_NET_ADMIN`, raw capture usually requires `CAP_NET_RAW`, and bait listeners on ports below `1024` usually require `CAP_NET_BIND_SERVICE`.
 
 Recommended options:
 
@@ -150,7 +150,7 @@ readlink -f .venv/bin/python
 Grant the needed capabilities once as an administrator:
 
 ```bash
-sudo setcap cap_net_raw,cap_net_admin=eip /full/path/to/python3
+sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service=eip /full/path/to/python3
 getcap /full/path/to/python3
 ```
 
@@ -166,6 +166,7 @@ Notes:
 - apply `setcap` to the real interpreter, not the `.venv/bin/python` symlink
 - interpreter upgrades may require capabilities to be applied again
 - this usually needs admin access once
+- if you enable bait ports such as `22`, `53`, or `80`, include `CAP_NET_BIND_SERVICE`
 
 ### Option 2: Use `dumpcap`
 

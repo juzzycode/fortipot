@@ -142,7 +142,7 @@ This keeps the MVP auditable and easy to test locally.
 - Dry-run mode keeps enforcement testable without changing network state.
 - Automated enforcement is gated by minimum confidence, cooldowns, MAC requirements for local quarantine, and per-minute action limits.
 - Exact FortiGate API behavior varies by environment and should be validated in a lab before production use.
-- On Linux, promiscuous capture permissions come from OS capabilities or tools like `dumpcap`, not from the Python virtual environment.
+- On Linux, promiscuous capture permissions come from OS capabilities or tools like `dumpcap`, and low bait ports may also require `CAP_NET_BIND_SERVICE`.
 
 ## Limitations
 
